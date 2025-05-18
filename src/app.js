@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -10,14 +11,14 @@ app.use(helmet());
 app.use(compression); //reduce size of metadata
 
 //init db
+require('./dbs/init.mongodb')
 
 //init routes
 app.get('/', (req, res, next) => {
     const strCompress = 'Hello';
-
     return res.status(200).json({
         message: 'WELCOME',
-        metadata: strCompress.repeat(1000)
+        // metadata: strCompress.repeat(1000)
     })
 })
 

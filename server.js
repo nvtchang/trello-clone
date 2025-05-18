@@ -2,7 +2,7 @@
 
 const app = require("./src/app");
 
-const port = 3055;
+const port = process.env.PORT || 3055;
 
 const server = app.listen(port, () => {
     console.log(`Trello clone start with port ${port}`);
