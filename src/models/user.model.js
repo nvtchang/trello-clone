@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   //avatarUrl: String,
-  //passwordHash: String, 
+  passwordHash: String, 
+  roles: String,
   createdAt: { type: Date, default: Date.now }
 });
 
