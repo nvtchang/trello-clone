@@ -9,6 +9,10 @@ const router = require('./routes')
 app.use(morgan("dev"))
 app.use(helmet());
 app.use(compression()); //reduce size of metadata
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: true
+}))
 
 //init db
 require('./dbs/init.mongodb')
