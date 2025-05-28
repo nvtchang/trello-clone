@@ -9,6 +9,7 @@ const keyTokenSchema = new mongoose.Schema({
     ref: 'User'
   },
   publicKey: String,
+  privateKey: String,
   refreshToken: {type: Array, default: []}, //detect user sử dụng trái phép token
   createdAt: { type: Date, default: Date.now }
 }, {

@@ -8,6 +8,7 @@ const userRole = {
     ADMIN: '0001',
     USER: '0002'
 }
+const { getInfoData } = require('../utils')
 
 class AccessService {
     static signUp = async({name, email, password}) => {
@@ -26,33 +27,45 @@ class AccessService {
                 passwordHash: passwordHash,
                 roles: [userRole.ADMIN]
             });
-            console.log("newUser", newUser)
             if(newUser) {
                 //created privateKey: sign token, publicKey: verify token
-                const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
-                    modulusLength: 4096
-                })
+                // const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+                //     modulusLength: 4096,
+                //     publicKeyEncoding: {
+                //         type: 'pkcs1',
+                //         format: 'pem'
+                //     },
+                //     privateKeyEncoding: {
+                //         type: 'pkcs1',
+                //         format: 'pem'
+                //     }
+                // })
+
+                const privateKey = crypto.randomBytes(64).toString('hex')
+                const publicKey = crypto.randomBytes(64).toString('hex')
+
                 console.log({ privateKey, publicKey })
 
-                const publicKeyString = await KeyTokenService.createKeyToken({ //save to keytoken collection
+                const keyStore = await KeyTokenService.createKeyToken({ //save to keytoken collection
                     userId: newUser.id, 
-                    publicKey
+                    publicKey,
+                    privateKey
                 })
 
-                if(!publicKeyString) {
+                if(!keyStore) {
                     return {
                         code: 'xxxx',
-                        message: 'publicKeyString not found'
+                        message: 'keyStore not found'
                     }
                 }
-
+                
                 //generate accessToken and refreshToken
                 const tokens = await createTokenPair({userId: newUser.id, email}, publicKey, privateKey)
 
                 return {
                     code: 201,
                     metadata: {
-                        user: newUser,
+                        user: getInfoData({fields : ['_id', 'name', 'email'] , object: newUser}),
                         tokens
                     }
                 }
