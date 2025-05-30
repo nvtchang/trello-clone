@@ -8,17 +8,15 @@ const userRole = {
     ADMIN: '0001',
     USER: '0002'
 }
-const { getInfoData } = require('../utils')
+const { getInfoData } = require('../utils');
+const { generateApiKey, saveApiKeyToUser } = require('./apiKey.service');
+const { BadRequestError } = require('../../core/error.response');
 
 class AccessService {
     static signUp = async({name, email, password}) => {
-        try {
             const user = await userModel.findOne({email}).lean()
             if(user) {
-                return {
-                    code: 'xxxx',
-                    message: 'duplicate user'
-                }
+                throw new BadRequestError('Error: Shop already registered')
             }
             const passwordHash = await bcrypt.hash(password, 10); //thuật toán băm ảnh hưởng cpu nên chỉ cần 10
             const newUser = await userModel.create({
@@ -27,20 +25,11 @@ class AccessService {
                 passwordHash: passwordHash,
                 roles: [userRole.ADMIN]
             });
+            
             if(newUser) {
-                //created privateKey: sign token, publicKey: verify token
-                // const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
-                //     modulusLength: 4096,
-                //     publicKeyEncoding: {
-                //         type: 'pkcs1',
-                //         format: 'pem'
-                //     },
-                //     privateKeyEncoding: {
-                //         type: 'pkcs1',
-                //         format: 'pem'
-                //     }
-                // })
-
+                const apiKey = generateApiKey();
+                await saveApiKeyToUser(apiKey, ['000'], newUser.id);
+                   
                 const privateKey = crypto.randomBytes(64).toString('hex')
                 const publicKey = crypto.randomBytes(64).toString('hex')
 
@@ -53,10 +42,7 @@ class AccessService {
                 })
 
                 if(!keyStore) {
-                    return {
-                        code: 'xxxx',
-                        message: 'keyStore not found'
-                    }
+                    throw new BadRequestError('keyStore not found')
                 }
                 
                 //generate accessToken and refreshToken
@@ -75,14 +61,6 @@ class AccessService {
                 code: 200,
                 metadata: null
             }
-
-        } catch (error) {
-            return {
-                code: 'xxx',
-                message: error.message,
-                status: 'error'
-            }
-        }
     }
 }
 
