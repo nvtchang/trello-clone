@@ -10,6 +10,7 @@ const ReasonStatusCode = {
     Forbidden: 'Bad Request',
     Conflict: 'Conflict Error'
 }
+
 class ErrorResponse extends Error {
     constructor(message, status) {
         super(message) 

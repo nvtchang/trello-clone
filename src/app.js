@@ -22,10 +22,10 @@ app.use('/', router);
 
 //handling error
 
-app.use((req, res, next) => { //middleware
+app.use((req, res, next) => { 
     const error = new Error('Not Found')
     error.status = 404
-    next(error)
+    next(error) // chuyển lỗi xuống middleware xử lý lỗi
 })
 
 app.use((error ,req, res, next) => { //ham xu ly loi
