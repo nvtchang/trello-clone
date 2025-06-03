@@ -38,10 +38,10 @@ class AccessService {
         const keys = generateKeys()
         
         //4
-        const tokens = await createTokenPair({userId: foundUser.id, email}, keys.public, keys.private)
+        const tokens = await createTokenPair({userId: foundUser._id, email}, keys.public, keys.private)
         
         await KeyTokenService.createKeyToken({
-            userId: foundUser.id,
+            userId: foundUser._id,
             publicKey: keys.public,
             privateKey: keys.private,
             refreshToken: tokens.refreshToken
@@ -77,7 +77,7 @@ class AccessService {
                 const keys = generateKeys();
 
                 const keyStore = await KeyTokenService.createKeyToken({ //save to keytoken collection
-                    userId: newUser.id, 
+                    userId: newUser._id, 
                     publicKey: keys.public,
                     privateKey: keys.private
                 })
@@ -87,7 +87,7 @@ class AccessService {
                 }
                 
                 //generate accessToken and refreshToken
-                const tokens = await createTokenPair({userId: newUser.id, email}, keys.public, keys.private)
+                const tokens = await createTokenPair({userId: newUser._id, email}, keys.public, keys.private)
 
                 return {
                     code: 201,
@@ -103,9 +103,10 @@ class AccessService {
             }
     }
     
-    //authen verify accessToken có phải chính chủ không để logout
-    static logout = async({email, password, refreshToken = null}) => {
-        
+    //xóa refreshToken trong db
+    //clear cookie
+    static logout = async({_id}) => {
+       return await KeyTokenService.removeKeyById(_id)
     }
 }
 

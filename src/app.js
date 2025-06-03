@@ -5,6 +5,9 @@ const helmet = require('helmet');
 const compression = require('compression');
 const app = express();
 const router = require('./routes')
+//
+const cookieParser = require('cookie-parser');
+
 //init middlewares
 app.use(morgan("dev"))
 app.use(helmet());
@@ -13,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }))
+app.use(cookieParser());
 
 //init db
 require('./dbs/init.mongodb')

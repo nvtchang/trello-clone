@@ -12,9 +12,7 @@ router.post('/users/login', asyncHandler(accessController.login))
 //authentication
 router.use(authentication)
 
-
 //logout
 router.post('/users/logout', asyncHandler(accessController.logout))
-
 
 module.exports = router;

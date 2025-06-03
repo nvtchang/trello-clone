@@ -3,10 +3,9 @@ const AccessService = require("../services/access.service")
 const { CREATED, SuccessResponse } = require("../../core/success.response")
 class AccessController {
     signUp = async(req, res, next) => {
-        const result =  await AccessService.signUp(req.body)
         new CREATED({
             message: 'Registered Success',
-            metadata: result.metadata
+            metadata:  await AccessService.signUp(req.body)
         }).send(res)
     }
     
@@ -17,7 +16,17 @@ class AccessController {
     }
     
     logout = async(req, res, next) => {
+        await AccessService.logout(req.keyToken)
         
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+        });
+        
+        new SuccessResponse({
+            message: 'Loggout success' 
+        }).send(res)     
     }
 }
 

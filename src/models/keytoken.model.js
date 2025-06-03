@@ -3,8 +3,8 @@ const DOCUMENT_NAME = 'Key' //row in SQL
 const COLLECTION_NAME = 'Keys' //table in SQL
 
 const keyTokenSchema = new mongoose.Schema({
-  user: {
-    type: Object,
+  userId: {
+    type: String,
     require: true,
     ref: 'User'
   },
