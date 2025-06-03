@@ -4,6 +4,7 @@ const { findById } = require("../services/apiKey.service");
 
 const HEADER = {
     API_KEY: 'x-api-key',
+    CLIENT_ID: 'x-client-id',
     AUTHORIZATION: 'authorization'
 }
 
@@ -39,9 +40,6 @@ const permission = (permission) => {
             })   
         }
         
-        console.log('permissisonssss' ,req.objKey.permissions)
-        console.log('permissison' , permission)
-        
         const validPermission = req.objKey.permissions.includes(permission)
         
         if(!validPermission) {
@@ -54,14 +52,8 @@ const permission = (permission) => {
     }
 }
 
-const asyncHandler = (fn) => {
-    return (req, res, next) => {
-        fn(req, res, next).catch(next)
-    }
-}
 
 module.exports = {
     apiKey,
-    permission,
-    asyncHandler
+    permission
 }

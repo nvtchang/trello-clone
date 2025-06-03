@@ -10,7 +10,11 @@ const keyTokenSchema = new mongoose.Schema({
   },
   publicKey: String,
   privateKey: String,
-  refreshToken: {type: Array, default: []}, //detect user sử dụng trái phép token
+  refreshTokensUsed: {type: Array, default: []}, //những RT đã được sử dụng
+  refreshToken: { //đang sử dụng
+    type: String,
+    require: true
+  },
   createdAt: { type: Date, default: Date.now }
 }, {
     collection: COLLECTION_NAME,
