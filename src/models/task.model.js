@@ -1,0 +1,75 @@
+'use strict'
+const mongoose = require('mongoose');
+const DOCUMENT_NAME = 'Task' //row in SQL
+const COLLECTION_NAME = 'Tasks' //table in SQL
+
+const taskSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  column: { type: mongoose.Schema.Types.ObjectId, ref: 'Column' },
+  board: { type: mongoose.Schema.Types.ObjectId, ref: 'Board' },
+  assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  dueDate: Date,
+  order: Number,
+  labels: [String],
+  attachments: [String],
+
+  type: {
+    type: String,
+    enum: ['Issue', 'Feature', 'Enhancement']
+  },
+  priority: {
+    type: String,
+    enum: ['Low', 'Medium', 'High'],
+    default: 'Medium'
+  },
+  status: {
+    type: String,
+    enum: ['To Do', 'In Progress', 'Done'],
+    default: 'To Do'
+  },
+  createdAt: { type: Date, default: Date.now }
+}, {
+    collection: COLLECTION_NAME,
+    timestamps: true
+});
+
+const issueSchema = new mongoose.Schema({
+    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
+    evidence: String, // link ảnh hoặc video lỗi (s3)
+    environment: String, // ví dụ: "Staging", "Production"
+    stepsToReproduce: [String],
+    expectedBehavior: String,
+    actualBehavior: String,
+}, {
+    collection: 'issues',
+    timestamps: true
+})
+
+const featureSchema = new mongoose.Schema({
+    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
+    businessGoal: String, // lý do ra tính năng này
+    acceptanceCriteria: [String], // mô tả khi nào dev/test coi là "Done"
+    mockupUrl: String, // link Figma, image mô tả
+}, {
+    collection: 'features',
+    timestamps: true
+})
+
+const enhancementSchema = new mongoose.Schema({
+    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
+    areaToImprove: String, // phần nào trong hệ thống được cải tiến
+    currentLimitation: String,
+    proposedImprovement: String,
+    expectedImpact: String, // ví dụ: "giảm thời gian response từ 3s -> 1s"
+}, {
+    collection: 'enhancement',
+    timestamps: true
+})
+
+module.exports = {
+    task: mongoose.model('Task', taskSchema),
+    issueTask: mongoose.model('Issue', issueSchema),
+    featureTask: mongoose.model('Features', featureSchema),
+    enhancementTask: mongoose.model('Enhancement', enhancementSchema),
+}
