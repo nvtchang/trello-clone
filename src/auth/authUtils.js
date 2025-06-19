@@ -17,13 +17,13 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
         })
 
         //debug login 
-        jwt.verify(accessToken, publicKey, function(err, decode) {
-            if(err) {
-                console.error('Error when verify accessToken', err)
-            } else {
-                console.log('',decode)
-            }
-        })
+        // jwt.verify(accessToken, publicKey, function(err, decode) {
+        //     if(err) {
+        //         console.error('Error when verify accessToken', err)
+        //     } else {
+        //         console.log('',decode)
+        //     }
+        // })
 
         return {accessToken, refreshToken}
     } catch (error) {

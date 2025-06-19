@@ -35,7 +35,6 @@ const taskSchema = new mongoose.Schema({
 });
 
 const issueSchema = new mongoose.Schema({
-    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
     evidence: String, // link ảnh hoặc video lỗi (s3)
     environment: String, // ví dụ: "Staging", "Production"
     stepsToReproduce: [String],
@@ -47,7 +46,6 @@ const issueSchema = new mongoose.Schema({
 })
 
 const featureSchema = new mongoose.Schema({
-    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
     businessGoal: String, // lý do ra tính năng này
     acceptanceCriteria: [String], // mô tả khi nào dev/test coi là "Done"
     mockupUrl: String, // link Figma, image mô tả
@@ -57,7 +55,6 @@ const featureSchema = new mongoose.Schema({
 })
 
 const enhancementSchema = new mongoose.Schema({
-    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
     areaToImprove: String, // phần nào trong hệ thống được cải tiến
     currentLimitation: String,
     proposedImprovement: String,
