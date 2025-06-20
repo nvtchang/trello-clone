@@ -41,11 +41,19 @@ const generateKeys = () => {
 }
 
 const authentication = asyncHandler(async (req, res, next) => {
-    //get token from cookie
-    const refreshToken = req.cookies?.refreshToken;
+    //get accessToken from header
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new AuthFailureError('Access token missing');
+    }
+    console.log("authHeader", authHeader)
+    const accessToken = authHeader.split(' ')[1];
+
     //decode token
-    const decoded = jwt.decode(refreshToken);
-    
+    const decoded = jwt.decode(accessToken);
+    if (!decoded?.userId) throw new AuthFailureError('Invalid access token');
+
     const userId = decoded.userId
     if (!userId) throw new NotFoundError('No token provided');
     
@@ -53,9 +61,9 @@ const authentication = asyncHandler(async (req, res, next) => {
     const keyToken = await KeyTokenService.findByUserId(userId)
     if(!keyToken || !keyToken.publicKey) throw new NotFoundError('Invalid token')
         
-    //use privateKey to verify token
+    //use publicKey to verify token
     try {
-        const verifiedPayload  = jwt.verify(refreshToken, keyToken.privateKey)  
+        const verifiedPayload  = jwt.verify(accessToken, keyToken.publicKey)  
         
         if(!verifiedPayload) throw new AuthFailureError('Invaild account')
         req.keyToken = keyToken

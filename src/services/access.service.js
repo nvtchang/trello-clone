@@ -2,7 +2,7 @@
 const userModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const KeyTokenService = require('./keyToken.service');
-const { createTokenPair, generateKeys } = require('../auth/authUtils');
+const { createTokenPair, generateKeys, refreshAccessToken } = require('../auth/authUtils');
 const userRole = {
     ADMIN: '0001',
     USER: '0002'
@@ -107,6 +107,38 @@ class AccessService {
     //clear cookie
     static logout = async({_id}) => {
        return await KeyTokenService.removeKeyById(_id)
+    }
+
+    static handleRefreshToken = async({ refreshToken, user, keyStore }) => {
+        const { userId, email } = user;
+
+        if(keyStore.refreshTokenUsed.includes(refreshToken)) {
+            await KeyTokenService.removeKeyById(userId)
+            throw new Error('Something happen')
+        }
+
+        if(keyStore.refreshToken !== refreshToken) throw new AuthFailureError('Refresh token not recognized');
+        
+        const foundUser = await findByEmail({email})
+        if(!foundUser) throw new AuthFailureError('User not found');
+
+        //create cap token moi
+        const tokens = await createTokenPair({userId, email}, keyStore.publicKey, keyStore.privateKey)
+
+        //update token
+        await keyStore.update({
+            $set: {
+                refreshToken: tokens.refreshToken
+            },
+            $addToSet: {
+                refreshTokenUsed: refreshToken //da duoc su dung de lay token moi roi
+            }
+        })
+        
+        return {
+            user, 
+            tokens
+        }
     }
 }
 
