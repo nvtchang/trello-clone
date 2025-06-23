@@ -41,9 +41,9 @@ class Task {
         this.priority = priority
         this.status = status
     }
-
     //create new Task
     async createTask() {
+        console.log("hete")
         return await task.create(this)
     }
 }

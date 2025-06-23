@@ -11,6 +11,7 @@ const { getInfoData } = require('../utils');
 const { generateApiKey, saveApiKeyToUser } = require('./apiKey.service');
 const { BadRequestError, AuthFailureError } = require('../../core/error.response');
 const { findByEmail } = require('./user.service');
+const keytokenModel = require('../models/keytoken.model');
 
 class AccessService {
     /**
@@ -110,9 +111,12 @@ class AccessService {
     }
 
     static handleRefreshToken = async({ refreshToken, user, keyStore }) => {
-        const { userId, email } = user;
-
-        if(keyStore.refreshTokenUsed.includes(refreshToken)) {
+        const { email, _id } = user;
+        const userId = _id.toString();
+        console.log("keyStore", keyStore);
+        console.log("refreshToken", refreshToken);
+        
+        if(keyStore.refreshTokensUsed.includes(refreshToken)) {
             await KeyTokenService.removeKeyById(userId)
             throw new Error('Something happen')
         }
@@ -126,14 +130,13 @@ class AccessService {
         const tokens = await createTokenPair({userId, email}, keyStore.publicKey, keyStore.privateKey)
 
         //update token
-        await keyStore.update({
-            $set: {
-                refreshToken: tokens.refreshToken
-            },
-            $addToSet: {
-                refreshTokenUsed: refreshToken //da duoc su dung de lay token moi roi
+        await keytokenModel.updateOne(
+            {userId},
+            {
+              $set: { refreshToken: tokens.refreshToken },
+              $addToSet: { refreshTokensUsed: refreshToken }
             }
-        })
+        )
         
         return {
             user, 

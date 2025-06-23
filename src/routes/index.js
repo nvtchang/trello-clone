@@ -9,8 +9,9 @@ router.use(apiKey)
 //check permission
 router.use(permission('000'))
 
-
+router.use('/v1/api/tasks', require('./task'))
 router.use('/v1/api', require('./access'))
+
 // router.get('/', (req, res, next) => {
 //     return res.status(200).json({
 //         message: 'WELCOME',

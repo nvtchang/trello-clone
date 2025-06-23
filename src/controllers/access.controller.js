@@ -30,7 +30,7 @@ class AccessController {
         }).send(res)     
     }
 
-    handleRefreshToken = async(req, res, next) => {
+    handleRefreshToken = async(req, res, next)  => { 
         const result = await AccessService.handleRefreshToken({
             refreshToken: req.cookies?.refreshToken,
             user: req.user,

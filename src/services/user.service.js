@@ -4,7 +4,7 @@ const userModel = require('../models/user.model');
 const findByEmail = async({ email, select = {
     email: 1, passwordHash: 2, name: 1, status: 1, roles: 1
 } }) => {
-    return await userModel.findOne({email: email}).select(select).lean();   
+    return await userModel.findOne({email: email}).select(select);   
 }
 
 module.exports = {

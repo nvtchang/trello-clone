@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const { asyncHandler } = require('../helper/asyncHandler');
 const { NotFoundError, AuthFailureError } = require("../../core/error.response")
 const KeyTokenService = require("../services/keyToken.service")
+const { findByEmail } = require("../services/user.service")
 
 const createTokenPair = async (payload, publicKey, privateKey) => {
     try {
@@ -42,16 +43,14 @@ const generateKeys = () => {
 
 const authentication = asyncHandler(async (req, res, next) => {
     //get accessToken from header
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const accessToken = req.headers.authorization;
+    
+    if (!accessToken) {
         throw new AuthFailureError('Access token missing');
     }
-    console.log("authHeader", authHeader)
-    const accessToken = authHeader.split(' ')[1];
-
     //decode token
     const decoded = jwt.decode(accessToken);
+        
     if (!decoded?.userId) throw new AuthFailureError('Invalid access token');
 
     const userId = decoded.userId
@@ -74,8 +73,40 @@ const authentication = asyncHandler(async (req, res, next) => {
     }
 })
 
+const verifyRefreshToken = asyncHandler(async (req, res, next) => {
+    //get refreshToken from cookie
+    //decoded token
+    //get the user
+    //get keystore
+    //verify the refreshToken
+    //assign to request
+    const refreshToken = req.cookies?.refreshToken;
+    if(!refreshToken) {
+        throw new AuthFailureError('Refresh token not provided')
+    }
+    
+    const decoded = jwt.decode(refreshToken);
+    
+    const userId = decoded.userId;
+    const email = decoded.email;
+    
+    if (!userId || !email) throw new AuthFailureError('Invalid refresh token');
+
+    const keyStore = await KeyTokenService.findByUserId(userId);
+    if (!keyStore || !keyStore.publicKey) throw new NotFoundError('Key store not found');
+    
+    const user = await findByEmail({ email });
+    console.log("user", user)
+    if (!user) throw new AuthFailureError('User not found');
+    req.user = user;
+    req.keyStore = keyStore;
+    
+    next();
+    
+})
 module.exports = {
     createTokenPair,
     generateKeys,
-    authentication
+    authentication,
+    verifyRefreshToken
 }
