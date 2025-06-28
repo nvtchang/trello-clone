@@ -96,7 +96,6 @@ const verifyRefreshToken = asyncHandler(async (req, res, next) => {
     if (!keyStore || !keyStore.publicKey) throw new NotFoundError('Key store not found');
     
     const user = await findByEmail({ email });
-    console.log("user", user)
     if (!user) throw new AuthFailureError('User not found');
     req.user = user;
     req.keyStore = keyStore;

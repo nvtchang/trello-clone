@@ -113,8 +113,6 @@ class AccessService {
     static handleRefreshToken = async({ refreshToken, user, keyStore }) => {
         const { email, _id } = user;
         const userId = _id.toString();
-        console.log("keyStore", keyStore);
-        console.log("refreshToken", refreshToken);
         
         if(keyStore.refreshTokensUsed.includes(refreshToken)) {
             await KeyTokenService.removeKeyById(userId)
