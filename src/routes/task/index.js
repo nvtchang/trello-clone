@@ -7,7 +7,7 @@ const router = express.Router()
 const { authentication } = require('../../auth/authUtils')
 
 //need token to process task
-router.use(authentication)
+// router.use(authentication)
 
 //create Task
 router.post('/create', asyncHandler(taskController.createTask))

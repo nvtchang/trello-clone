@@ -53,20 +53,17 @@ class IssueTask extends Task {
         this.issueDetails = task.details
     }
     async createTask() {
-        const session = await mongoose.startSession();
-        session.startTransaction();
+       
         try { //use transaction to revert if create task fail 
-            const newIssue = await issueTask.create([this.issueDetails], { session }) //session require array as first arg
+            const newIssue = await issueTask.create(this.issueDetails) //session require array as first arg
             if(!newIssue) throw new BadRequestError("Can not created new Issue")
             
-            const newTask = await super.createTask(session)
+            const newTask = await super.createTask()
             if(!newTask) throw new BadRequestError("Can not created new Task")
-            console.log("newIssue",newIssue)
-            await session.commitTransaction();
+            
+            return newIssue
         } catch(error) {
             console.error('Transaction aborted:', error.message);
-        } finally {
-            session.endSession();
         }
     }
 }
@@ -77,22 +74,18 @@ class FeatureTask extends Task {
         this.featureDetails = task.details
     }
     
-    async createTask() {
-        const session = await mongoose.startSession();
-        
+    async createTask() {        
         try { //use transaction to revert if create task fail 
-            const newFeature = await featureTask.create(this.featureDetails).session(session)
+            const newFeature = await featureTask.create(this.featureDetails)
             if(!newFeature) throw new BadRequestError("Can not created new Feature")
             
-            const newTask = await super.createTask().session(session)
+            const newTask = await super.createTask()
             if(!newTask) throw new BadRequestError("Can not created new Task")
             return newFeature
 
         } catch(error) {
             console.error('Transaction aborted:', error.message);
-        } finally {
-            session.endSession();
-        }
+        } 
     }
 }
 
@@ -101,20 +94,16 @@ class EnhancementTask extends Task {
         super(task)
         this.enhancementDetails = task.details
     }
-    async createTask() {
-        const session = await mongoose.startSession();
-        
+    async createTask() {        
         try { //use transaction to revert if create task fail 
-            const newEnhancement = await enhancementTask.create(this).session(session)
+            const newEnhancement = await enhancementTask.create(this)
             if(!newEnhancement) throw new BadRequestError("Can not created new Enhancement")
             
-            const newTask = await super.createTask().session(session)
+            const newTask = await super.createTask()
             if(!newTask) throw new BadRequestError("Can not created new Task")
             return newEnhancement
         } catch(error) {
             console.error('Transaction aborted:', error.message);
-        } finally {
-            session.endSession();
         }
     }
 }
