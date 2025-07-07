@@ -6,7 +6,10 @@ class TaskController {
     createTask = async(req, res, next) => {
         new SuccessResponse({
             message: 'Created new Task success',
-            metadata: await TaskService.createTask(req.body.type, req.body)
+            metadata: await TaskService.createTask(req.body.type, {
+                ...req.body,
+                userId: req.user //get userId from token
+            })
         }).send(res)
     }
 }

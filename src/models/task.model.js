@@ -4,16 +4,16 @@ const DOCUMENT_NAME = 'Task' //row in SQL
 const COLLECTION_NAME = 'Tasks' //table in SQL
 
 const taskSchema = new mongoose.Schema({
-  title: String,
+  title: String, //title: add database validation
   description: String,
   column: { type: mongoose.Schema.Types.ObjectId, ref: 'Column' },
   board: { type: mongoose.Schema.Types.ObjectId, ref: 'Board' },
   assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  taskSlug: String, //slug: add-database-validation
   dueDate: Date,
   order: Number,
   labels: [String],
   attachments: [String],
-
   type: {
     type: String,
     enum: ['Issue', 'Feature', 'Enhancement']
@@ -39,7 +39,7 @@ const issueSchema = new mongoose.Schema({
     environment: String, // ví dụ: "Staging", "Production"
     stepsToReproduce: [String],
     expectedBehavior: String,
-    actualBehavior: String,
+    actualBehavior: String
 }, {
     collection: 'issues',
     timestamps: true
@@ -48,7 +48,7 @@ const issueSchema = new mongoose.Schema({
 const featureSchema = new mongoose.Schema({
     businessGoal: String, // lý do ra tính năng này
     acceptanceCriteria: [String], // mô tả khi nào dev/test coi là "Done"
-    mockupUrl: String, // link Figma, image mô tả
+    mockupUrl: String
 }, {
     collection: 'features',
     timestamps: true
