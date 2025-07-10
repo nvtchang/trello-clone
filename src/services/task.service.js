@@ -3,7 +3,7 @@
 const { task, issueTask, featureTask, enhancementTask } = require("../models/task.model")
 const { BadRequestError } = require("../../core/error.response")
 const mongoose = require('mongoose');
-
+const { findAllDraftTasks } = require("../models/repositories/task.repo")
 //define factory class
 class TaskFactory {
     /*
@@ -33,17 +33,22 @@ class TaskFactory {
         //         throw new BadRequestError(`Invalid Task type ${type}`)
         // }
     }
+    
+    static async findAllDraftsForBoard({taskBoard, limit = 50, skip = 0}) {
+        const query = { taskBoard, isDraft: true}
+        return await findAllDraftTasks({query, limit, skip})
+    }
 }
 
 //define base task class
 class Task {
     constructor({
-        title, description, column, board, assignees, dueDate, order, labels, attachments, type, priority, status
+        title, description, column, taskBoard, assignees, dueDate, order, labels, attachments, type, priority, status
     }){
         this.title = title
         this.description = description
         this.column = column
-        this.board = board
+        this.taskBoard = taskBoard
         this.assignees = assignees
         this.dueDate = dueDate
         this.order = order

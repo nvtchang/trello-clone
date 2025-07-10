@@ -6,13 +6,41 @@ const DOCUMENT_NAME = 'Boards';
 
 // Declare the Schema of the Mongo model
 var boardSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    columns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Column' }],
-    createdAt: { type: Date, default: Date.now }
-}, {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 3
+    },
+    description: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    members: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }],
+    slug: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true
+    },
+    isPrivate: {
+      type: Boolean,
+      default: false
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }, {
     timestamps: true,
     collection: COLLECTION_NAME
 });

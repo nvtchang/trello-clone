@@ -2,12 +2,13 @@
 const mongoose = require('mongoose');
 const DOCUMENT_NAME = 'Task' //row in SQL
 const COLLECTION_NAME = 'Tasks' //table in SQL
+const slugify = require('slugify')
 
 const taskSchema = new mongoose.Schema({
   title: String, //title: add database validation
   description: String,
   column: { type: mongoose.Schema.Types.ObjectId, ref: 'Column' },
-  board: { type: mongoose.Schema.Types.ObjectId, ref: 'Board' },
+  taskBoard: { type: mongoose.Schema.Types.ObjectId },
   assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   taskSlug: String, //slug: add-database-validation
   dueDate: Date,
@@ -28,11 +29,29 @@ const taskSchema = new mongoose.Schema({
     enum: ['To Do', 'In Progress', 'Done'],
     default: 'To Do'
   },
+  isDraft: {
+    type: Boolean,
+    default: true,
+    index: true,
+    select: false //not show when query select
+  },
+  isPublish: {
+    type: Boolean,
+    default: false,
+    index: true,
+    select: false //not show when query select
+  },
   createdAt: { type: Date, default: Date.now }
 }, {
     collection: COLLECTION_NAME,
     timestamps: true
 });
+
+//run before .save() .create()
+taskSchema.pre('save', function(next) {
+  this.taskSlug = slugify(this.title, {lower: true})
+  next()
+})
 
 const issueSchema = new mongoose.Schema({
     evidence: String, // link ảnh hoặc video lỗi (s3)

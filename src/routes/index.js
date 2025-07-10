@@ -10,6 +10,7 @@ router.use(apiKey)
 router.use(permission('000'))
 
 router.use('/v1/api/tasks', require('./task'))
+router.use('/v1/api/boards', require('./board'))
 router.use('/v1/api', require('./access'))
 
 // router.get('/', (req, res, next) => {
