@@ -7,6 +7,6 @@ const router = express.Router()
 router.post('/create', asyncHandler(boardController.createBoard))
 
 //query
-// router.get('/drafts', asyncHandler(boardController.getAllDraftsForBoard))
+router.get('/drafts', asyncHandler(boardController.getAllDraftsForBoard))
 
 module.exports = router;

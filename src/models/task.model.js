@@ -29,18 +29,18 @@ const taskSchema = new mongoose.Schema({
     enum: ['To Do', 'In Progress', 'Done'],
     default: 'To Do'
   },
-  isDraft: {
-    type: Boolean,
-    default: true,
-    index: true,
-    select: false //not show when query select
-  },
-  isPublish: {
+  isArchived: {
     type: Boolean,
     default: false,
     index: true,
     select: false //not show when query select
   },
+  // isPublish: {
+  //   type: Boolean,
+  //   default: false,
+  //   index: true,
+  //   select: false //not show when query select
+  // },
   createdAt: { type: Date, default: Date.now }
 }, {
     collection: COLLECTION_NAME,

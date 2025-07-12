@@ -3,7 +3,7 @@
 const { task, issueTask, featureTask, enhancementTask } = require("../models/task.model")
 const { BadRequestError } = require("../../core/error.response")
 const mongoose = require('mongoose');
-const { findAllDraftTasks } = require("../models/repositories/task.repo")
+const { findAllArchivedTasks, archivedTask } = require("../models/repositories/task.repo")
 //define factory class
 class TaskFactory {
     /*
@@ -34,10 +34,13 @@ class TaskFactory {
         // }
     }
     
-    static async findAllDraftsForBoard({taskBoard, limit = 50, skip = 0}) {
-        const query = { taskBoard, isDraft: true}
-        return await findAllDraftTasks({query, limit, skip})
+    static async archiveTask({taskId, body}) {
+        return await archivedTask({ filter: {_id: taskId}, update: { isArchived: body.isArchived } })
     }
+    // static async findAllDraftsForBoard({taskBoard, limit = 50, skip = 0}) {
+    //     const query = { taskBoard, isDraft: true}
+    //     return await findAllArchivedTasks({query, limit, skip})
+    // }
 }
 
 //define base task class

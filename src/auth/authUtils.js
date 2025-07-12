@@ -7,10 +7,9 @@ const KeyTokenService = require("../services/keyToken.service")
 const { findByEmail } = require("../services/user.service")
 
 const createTokenPair = async (payload, publicKey, privateKey) => {
-    try {
-        
+    try {        
         const accessToken = jwt.sign(payload, publicKey, {
-            expiresIn: '2 days'
+            expiresIn: '4h'
         })
 
         const refreshToken = jwt.sign(payload, privateKey, {

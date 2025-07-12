@@ -12,6 +12,18 @@ class TaskController {
             })
         }).send(res)
     }
+
+    archiveTask = async(req, res, next) => {
+        const taskId = req.params.id;
+        const body = req.body;
+        if (!taskId) {
+            throw new BadRequestError('Task ID is required');
+        }
+        new SuccessResponse({
+            message: 'Archived Task success',
+            metadata: await TaskService.archiveTask({taskId, body})
+        }).send(res)
+    }
 }
 
 module.exports = new TaskController()

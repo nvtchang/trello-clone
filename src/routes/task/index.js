@@ -8,4 +8,7 @@ const router = express.Router()
 //create Task
 router.post('/create', asyncHandler(taskController.createTask))
 
+//archive Task
+router.patch('/archive/:id', asyncHandler(taskController.archiveTask))
+
 module.exports = router;
