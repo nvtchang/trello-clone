@@ -47,6 +47,9 @@ const taskSchema = new mongoose.Schema({
     timestamps: true
 });
 
+//create index for search
+taskSchema.index({title: 'text', description: 'text'})
+
 //run before .save() .create()
 taskSchema.pre('save', function(next) {
   this.taskSlug = slugify(this.title, {lower: true})

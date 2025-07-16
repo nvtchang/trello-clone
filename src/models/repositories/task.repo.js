@@ -12,10 +12,21 @@ const findAllArchivedTasks = async ({query, limit, skip}) => {
 }
 
 const archivedTask = async ({filter, update}) => {
-    return await task.findOneAndUpdate(filter, update)
+    const { _id } =  await task.findOneAndUpdate(filter, update)
+    return _id ? { _id } : null
+}
+
+const searchTask = async ({keySearch}) => {
+    const regexSearch  = new RegExp(keySearch);
+    const result = await task.find({
+        $text: {
+            $search: regexSearch
+        }
+    }).lean();
 }
 
 module.exports = {
     findAllArchivedTasks,
-    archivedTask
+    archivedTask,
+    searchTask
 }

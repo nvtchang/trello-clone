@@ -37,10 +37,15 @@ class TaskFactory {
     static async archiveTask({taskId, body}) {
         return await archivedTask({ filter: {_id: taskId}, update: { isArchived: body.isArchived } })
     }
-    // static async findAllDraftsForBoard({taskBoard, limit = 50, skip = 0}) {
-    //     const query = { taskBoard, isDraft: true}
-    //     return await findAllArchivedTasks({query, limit, skip})
-    // }
+
+    static async findAllArchivedTasks({taskBoard, limit = 50, skip = 0}) {
+        const query = { taskBoard, isDraft: true}
+        return await findAllArchivedTasks({query, limit, skip})
+    }
+
+    static async searchTasks({keySearch}) {
+        
+    }
 }
 
 //define base task class

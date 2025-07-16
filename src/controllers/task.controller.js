@@ -13,6 +13,24 @@ class TaskController {
         }).send(res)
     }
 
+    /**
+     * @description Get all archived tasks for a specific task board
+     * @param {String} taskBoard - The ID of the task board
+     * @param {Number} limit 
+     * @param {Number} skip 
+     * @return { JSON } 
+     */
+    getAllArchivedTasks = async(req, res, next) => {
+        const { taskBoard, limit, skip } = req.query;
+        if(!taskBoard) {
+            throw new BadRequestError('Task board is required');
+        }
+        new SuccessResponse({
+            message: 'Get all archived tasks success',
+            metadata: await TaskService.findAllArchivedTasks({ taskBoard, limit, skip })
+        }).send(res)
+    }
+
     archiveTask = async(req, res, next) => {
         const taskId = req.params.id;
         const body = req.body;
