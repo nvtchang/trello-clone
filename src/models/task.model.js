@@ -32,8 +32,7 @@ const taskSchema = new mongoose.Schema({
   isArchived: {
     type: Boolean,
     default: false,
-    index: true,
-    select: false //not show when query select
+    index: true
   },
   // isPublish: {
   //   type: Boolean,

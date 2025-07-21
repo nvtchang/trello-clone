@@ -5,7 +5,7 @@ const COLLECTION_NAME = 'Board';
 const DOCUMENT_NAME = 'Boards';
 
 // Declare the Schema of the Mongo model
-var boardSchema = new mongoose.Schema({
+const boardSchema = new mongoose.Schema({
     title: {
       type: String,
       required: true,

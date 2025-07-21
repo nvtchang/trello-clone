@@ -3,7 +3,7 @@
 const { task, issueTask, featureTask, enhancementTask } = require("../models/task.model")
 const { BadRequestError } = require("../../core/error.response")
 const mongoose = require('mongoose');
-const { findAllArchivedTasks, archivedTask } = require("../models/repositories/task.repo")
+const { findAllArchivedTasks, findOneUpdatedTask, searchTask } = require("../models/repositories/task.repo")
 //define factory class
 class TaskFactory {
     /*
@@ -21,21 +21,15 @@ class TaskFactory {
         if(!taskClass) {
             throw new BadRequestError(`Task type ${type} is not registered`);  
         }
-        return new taskClass(payload).createTask();
-        // switch(type){
-        //     case 'Issue':  
-        //         return new IssueTask(payload).createTask();
-        //     case 'Feature':
-        //         return new FeatureTask(payload).createTask();
-        //     case 'Enhancement':
-        //         return new EnhancementTask(payload).createTask();
-        //     default:
-        //         throw new BadRequestError(`Invalid Task type ${type}`)
-        // }
+        return new taskClass(payload).createTask();      
     }
     
-    static async archiveTask({taskId, body}) {
-        return await archivedTask({ filter: {_id: taskId}, update: { isArchived: body.isArchived } })
+    static async updateTask({taskId, body}){
+        return await findOneUpdatedTask({ filter: {_id: taskId}, update: body })
+    }
+    
+    static async archiveTask({taskId, isArchived}) {
+        return await findOneUpdatedTask({ filter: {_id: taskId}, update: { isArchived: isArchived } })
     }
 
     static async findAllArchivedTasks({taskBoard, limit = 50, skip = 0}) {
@@ -44,7 +38,15 @@ class TaskFactory {
     }
 
     static async searchTasks({keySearch}) {
-        
+        return await searchTask({keySearch})
+    }
+    
+    static async findAllTasks({keySearch}) {
+        return await searchTask({keySearch})
+    }
+    
+    static async findTask({keySearch}) {
+        return await searchTask({keySearch})
     }
 }
 

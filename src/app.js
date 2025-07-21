@@ -5,6 +5,12 @@ const helmet = require('helmet');
 const compression = require('compression');
 const app = express();
 const router = require('./routes')
+
+//swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 //
 const cookieParser = require('cookie-parser');
 

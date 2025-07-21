@@ -1,5 +1,5 @@
 'use strict'
-const { board } = require("../models/board.model")
+const board = require("../models/board.model")
 class BoardService {
     static createBoard = async(payload) => {
         return await board.create(payload)

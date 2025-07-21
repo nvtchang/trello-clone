@@ -1,7 +1,7 @@
 'use strict'
 const TaskService = require("../services/task.service")
 const { SuccessResponse } = require("../../core/success.response")
-
+const { BadRequestError } = require("../../core/error.response")
 class TaskController {
     createTask = async(req, res, next) => {
         new SuccessResponse({
@@ -30,8 +30,8 @@ class TaskController {
             metadata: await TaskService.findAllArchivedTasks({ taskBoard, limit, skip })
         }).send(res)
     }
-
-    archiveTask = async(req, res, next) => {
+    
+    updateTask = async(req, res, next) => {
         const taskId = req.params.id;
         const body = req.body;
         if (!taskId) {
@@ -39,7 +39,30 @@ class TaskController {
         }
         new SuccessResponse({
             message: 'Archived Task success',
-            metadata: await TaskService.archiveTask({taskId, body})
+            metadata: await TaskService.updateTask({taskId, body})
+        }).send(res)
+    }
+    
+    archiveTask = async(req, res, next) => {
+        const taskId = req.params.id;
+        const isArchived = req.path.includes('unarchive') ? false : true;
+        console.log("isArchived", isArchived)
+        if (!taskId) {
+            throw new BadRequestError('Task ID is required');
+        }
+        new SuccessResponse({
+            message: 'Archived Task success',
+            metadata: await TaskService.archiveTask({taskId, isArchived})
+        }).send(res)
+    }
+    
+    searchTask = async(req, res, next) => {
+        const keySearch = req.params.keySearch;
+        if (!keySearch) {
+            throw new BadRequestError('keySearch is required');
+        }
+        new SuccessResponse({
+            metadata: await TaskService.searchTasks({keySearch})
         }).send(res)
     }
 }

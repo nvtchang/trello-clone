@@ -6,15 +6,21 @@ const { asyncHandler } = require('../../helper/asyncHandler')
 const router = express.Router()
 const { authentication } = require('../../auth/authUtils')
 
+router.get('/search:keySearch', asyncHandler(taskController.searchTask))
+
 router.use(authentication)
 
 //create Task
 router.post('/create', asyncHandler(taskController.createTask))
 
-//archive Task
-router.patch('/archive/:id', asyncHandler(taskController.archiveTask))
+//update Task
+router.patch('/:id', asyncHandler(taskController.updateTask))
+
+//archive and unarchive
+router.post('/:id/archive', asyncHandler(taskController.archiveTask))
+router.post('/:id/unarchive', asyncHandler(taskController.archiveTask))
 
 //QUERY
-router.get('/archives', asyncHandler(taskController.getAllArchivedTasks))
+router.get('/archives/:taskBoard', asyncHandler(taskController.getAllArchivedTasks))
 
 module.exports = router;
