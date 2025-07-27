@@ -3,10 +3,7 @@ const userModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const KeyTokenService = require('./keyToken.service');
 const { createTokenPair, generateKeys, refreshAccessToken } = require('../auth/authUtils');
-const userRole = {
-    ADMIN: '0001',
-    USER: '0002'
-}
+const { userRole } = require('../auth/constant')
 const { getInfoData } = require('../utils');
 const { generateApiKey, saveApiKeyToUser } = require('./apiKey.service');
 const { BadRequestError, AuthFailureError } = require('../../core/error.response');
@@ -25,6 +22,7 @@ class AccessService {
     static login = async({email, password, refreshToken = null}) => { //
         //1
         const foundUser = await findByEmail({email});
+
         if(!foundUser) {
             throw new BadRequestError('Cannot find User')
         }
@@ -37,9 +35,10 @@ class AccessService {
         
         //3
         const keys = generateKeys()
-        
         //4
-        const tokens = await createTokenPair({userId: foundUser._id, email}, keys.public, keys.private)
+        const mapRole = userRole[foundUser.role]
+
+        const tokens = await createTokenPair({userId: foundUser._id, email, role: mapRole}, keys.public, keys.private)
         
         await KeyTokenService.createKeyToken({
             userId: foundUser._id,
@@ -56,7 +55,8 @@ class AccessService {
         }        
     }
     
-    static signUp = async({name, email, password}) => {
+    static signUp = async({name, email, password, role}) => {
+        
             const user = await userModel.findOne({email}).lean()
             if(user) {
                 throw new BadRequestError('Error: Shop already registered')
@@ -66,15 +66,15 @@ class AccessService {
                 name,
                 email,
                 passwordHash: passwordHash,
-                roles: [userRole.ADMIN]
+                role
             });
             
             if(newUser) {
                 const apiKey = generateApiKey();
-                await saveApiKeyToUser(apiKey, ['000'], newUser.id);
+                const mapRole = userRole[role]
+                
+                await saveApiKeyToUser(apiKey, mapRole, newUser.id);
                    
-                // const privateKey = crypto.randomBytes(64).toString('hex')
-                // const publicKey = crypto.randomBytes(64).toString('hex')
                 const keys = generateKeys();
 
                 const keyStore = await KeyTokenService.createKeyToken({ //save to keytoken collection
@@ -88,7 +88,7 @@ class AccessService {
                 }
                 
                 //generate accessToken and refreshToken
-                const tokens = await createTokenPair({userId: newUser._id, email}, keys.public, keys.private)
+                const tokens = await createTokenPair({userId: newUser._id, email, mapRole}, keys.public, keys.private)
 
                 return {
                     code: 201,

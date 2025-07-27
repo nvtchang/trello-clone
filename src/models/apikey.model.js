@@ -15,7 +15,7 @@ const apiKeySchema = new mongoose.Schema({
   permissions: {
     type: [String],
     require: true,
-    enum: ['000', '111', '222']
+    enum: ['0001', '0002', '0003']
   },
   userId : {
     type: String,

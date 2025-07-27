@@ -1,6 +1,8 @@
 'use strict'
 
 const { findById } = require("../services/apiKey.service");
+const { userRole } = require("./constant")
+const _ = require("lodash")
 
 const HEADER = {
     API_KEY: 'x-api-key',
@@ -33,27 +35,42 @@ const apiKey = async (req, res, next) => {
 }
 
 const permission = (permission) => {
-    return (req, res, next) => { //closure có thể sử dụng hàm của các hàm cha
+    return (req, res, next) => { 
         if(!req.objKey.permissions) {
             return res.status(403).json({
                 message: 'Permission denied'
             })   
-        }
-        
+        }    
         const validPermission = req.objKey.permissions.includes(permission)
         
         if(!validPermission) {
             return res.status(403).json({
                 message: 'Permission denied'
             })   
-        }
-        
+        }       
         return next()
     }
 }
 
+const checkRole = (role) => {
+    return(req, res, next) => {
+        const decodeRole = _.findKey(userRole, value => value === req.role)
+        if(decodeRole !== role) {
+            return res.status(403).json({
+                message: 'Access denied: Insufficient privileges'
+            })   
+        }
+        return next()
+    }
+}
 
+const isBoardMember = () => {
+    return(req, res, next) => {
+        //
+    }
+}
 module.exports = {
     apiKey,
-    permission
+    permission,
+    checkRole
 }

@@ -10,6 +10,22 @@ class BoardController {
             metadata: await BoardService.createBoard(req.body)
         }).send(res)
     }
+    
+    getBoard = async(req, res, next) => {
+        const boardId = req.param.boardId;
+        
+        new SuccessResponse({
+            metadata: await BoardService.createBoard(req.body)
+        }).send(res)
+    }
+    
+    deleteBoard = async(req, res, next) => {
+        console.log("here")        
+        new SuccessResponse({
+            metadata: await BoardService.createBoard(req.body)
+        }).send(res)
+    }
+    
 }
 
 module.exports = new BoardController()

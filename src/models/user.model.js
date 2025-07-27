@@ -8,7 +8,11 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   //avatarUrl: String,
   passwordHash: String, 
-  roles: [String],
+  role: {
+    type: [String],
+    require: true,
+    enum: ['admin', 'user', 'guest']
+  },
   createdAt: { type: Date, default: Date.now }
 }, {
     collection: COLLECTION_NAME,

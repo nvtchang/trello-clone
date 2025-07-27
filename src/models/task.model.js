@@ -34,12 +34,10 @@ const taskSchema = new mongoose.Schema({
     default: false,
     index: true
   },
-  // isPublish: {
-  //   type: Boolean,
-  //   default: false,
-  //   index: true,
-  //   select: false //not show when query select
-  // },
+  createdBy: {
+    type: String, 
+    require: true
+  },
   createdAt: { type: Date, default: Date.now }
 }, {
     collection: COLLECTION_NAME,

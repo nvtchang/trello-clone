@@ -16,15 +16,6 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
             expiresIn: '7 days'
         })
 
-        //debug login 
-        // jwt.verify(accessToken, publicKey, function(err, decode) {
-        //     if(err) {
-        //         console.error('Error when verify accessToken', err)
-        //     } else {
-        //         console.log('',decode)
-        //     }
-        // })
-
         return {accessToken, refreshToken}
     } catch (error) {
         
@@ -49,7 +40,6 @@ const authentication = asyncHandler(async (req, res, next) => {
     }
     //decode token
     const decoded = jwt.decode(accessToken);
-        
     if (!decoded?.userId) throw new AuthFailureError('Invalid access token');
 
     const userId = decoded.userId
@@ -65,6 +55,7 @@ const authentication = asyncHandler(async (req, res, next) => {
         
         if(!verifiedPayload) throw new AuthFailureError('Invaild account')
         req.keyToken = keyToken
+        req.role = decoded.role
         return next()
         
     } catch (error) {
@@ -100,8 +91,8 @@ const verifyRefreshToken = asyncHandler(async (req, res, next) => {
     req.keyStore = keyStore;
     
     next();
-    
 })
+
 module.exports = {
     createTokenPair,
     generateKeys,

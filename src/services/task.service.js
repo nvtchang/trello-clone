@@ -3,7 +3,7 @@
 const { task, issueTask, featureTask, enhancementTask } = require("../models/task.model")
 const { BadRequestError } = require("../../core/error.response")
 const mongoose = require('mongoose');
-const { findAllArchivedTasks, findOneUpdatedTask, searchTask } = require("../models/repositories/task.repo")
+const { findAllArchivedTasks, findOneUpdatedTask, searchTask, findAllTasks, findTask } = require("../models/repositories/task.repo")
 //define factory class
 class TaskFactory {
     /*
@@ -41,12 +41,12 @@ class TaskFactory {
         return await searchTask({keySearch})
     }
     
-    static async findAllTasks({keySearch}) {
-        return await searchTask({keySearch})
+    static async findAllTasks({limit = 50, sort = 'ctime', page = 1, filter = {isArchived: false}}) {
+        return await findAllTasks({limit, sort, page, filter, select: ['title']})
     }
     
-    static async findTask({keySearch}) {
-        return await searchTask({keySearch})
+    static async findTask({taskId}) {
+        return await findTask({taskId, unSelect: ['__v']})
     }
 }
 

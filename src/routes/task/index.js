@@ -5,8 +5,12 @@ const taskController = require('../../controllers/task.controller')
 const { asyncHandler } = require('../../helper/asyncHandler')
 const router = express.Router()
 const { authentication } = require('../../auth/authUtils')
+const { checkRole } = require('../../auth/checkAuth')
 
-router.get('/search:keySearch', asyncHandler(taskController.searchTask))
+//public route
+router.get('/search/:keySearch', asyncHandler(taskController.searchTask))
+router.get('', asyncHandler(taskController.findAllTasks))
+router.get('/:taskId', asyncHandler(taskController.findTask))
 
 router.use(authentication)
 
@@ -17,7 +21,7 @@ router.post('/create', asyncHandler(taskController.createTask))
 router.patch('/:id', asyncHandler(taskController.updateTask))
 
 //archive and unarchive
-router.post('/:id/archive', asyncHandler(taskController.archiveTask))
+router.post('/:id/archive', checkRole('admin'), asyncHandler(taskController.archiveTask))
 router.post('/:id/unarchive', asyncHandler(taskController.archiveTask))
 
 //QUERY

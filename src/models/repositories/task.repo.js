@@ -1,7 +1,7 @@
 'use strict'
 
 const { task, issueTask, featureTask, enhancementTask } = require("../task.model")
-const { getSelectData } = require("../../utils/index")
+const { getSelectData, getUnSelectData } = require("../../utils/index")
 
 const findAllArchivedTasks = async ({query, limit, skip}) => {
     return await task.find(query)
@@ -30,11 +30,31 @@ const searchTask = async ({keySearch}) => {
             $search: regexSearch
         }
     }).lean();
-    console.log("result", result)
+    return result
+}
+
+const findAllTasks = async ({limit, sort, page, filter, select}) => {
+    const skip = (page - 1) * limit
+    const sortBy = sort === 'ctime' ? {_id: -1} : {_id: 1}
+    const tasks = await task.find(filter)
+        .sort(sortBy)
+        .skip(skip)
+        .limit(limit)
+        .select(getSelectData(select))
+        .lean()
+    return tasks
+}
+
+const findTask = async ({taskId, unSelect}) => {
+    return await task.findById({
+        taskId
+    }).select(getUnSelectData(unSelect))
 }
 
 module.exports = {
     findAllArchivedTasks,
     findOneUpdatedTask,
-    searchTask
+    searchTask,
+    findAllTasks,
+    findTask
 }

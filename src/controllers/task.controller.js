@@ -58,11 +58,26 @@ class TaskController {
     
     searchTask = async(req, res, next) => {
         const keySearch = req.params.keySearch;
+
         if (!keySearch) {
             throw new BadRequestError('keySearch is required');
         }
         new SuccessResponse({
             metadata: await TaskService.searchTasks({keySearch})
+        }).send(res)
+    }
+    
+    findAllTasks = async(req, res, next) => {
+        new SuccessResponse({
+            metadata: await TaskService.findAllTasks(req.query)
+        }).send(res)
+    }
+    
+    findTask = async(req, res, next) => {
+        new SuccessResponse({
+            metadata: await TaskService.findTask({
+                taskId: req.params.taskId
+            })
         }).send(res)
     }
 }
