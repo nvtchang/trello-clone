@@ -4,6 +4,14 @@ const userRole = {
     guest: '0003'
 }
 
+const role = {
+  ADMIN: 'admin',
+  USER: 'user',
+  GUEST: 'guest',
+};
+
+
 module.exports = {
-    userRole
+    userRole,
+    role
 }
