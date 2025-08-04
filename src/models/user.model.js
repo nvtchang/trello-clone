@@ -1,3 +1,4 @@
+const { findLastKey } = require('lodash');
 const mongoose = require('mongoose');
 const DOCUMENT_NAME = 'User' //row in SQL
 const COLLECTION_NAME = 'Users' //table in SQL
@@ -7,7 +8,11 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   //avatarUrl: String,
-  passwordHash: String, 
+  passwordHash: {
+    type: String, 
+    require: true,
+    select: false
+  },
   role: {
     type: [String],
     require: true,

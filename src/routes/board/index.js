@@ -2,8 +2,7 @@ const express = require('express')
 const boardController = require('../../controllers/board.controller')
 const { asyncHandler } = require('../../helper/asyncHandler')
 const { authentication } = require('../../auth/authUtils')
-const { checkRole } = require('../../auth/checkAuth')
-
+const { checkRole, isBoardMember } = require('../../auth/checkAuth')
 
 const router = express.Router()
 
@@ -17,5 +16,6 @@ router.delete('/delete', checkRole('admin'), asyncHandler(boardController.create
 
 
 //query
+router.get('/:boardId', isBoardMember, asyncHandler(boardController.getBoard))
 
 module.exports = router;

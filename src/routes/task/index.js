@@ -5,14 +5,14 @@ const taskController = require('../../controllers/task.controller')
 const { asyncHandler } = require('../../helper/asyncHandler')
 const router = express.Router()
 const { authentication } = require('../../auth/authUtils')
-const { checkRole } = require('../../auth/checkAuth')
+const { checkRole, isBoardMember } = require('../../auth/checkAuth')
 
-//public route
+router.use(authentication)
+router.use(isBoardMember)
+
 router.get('/search/:keySearch', asyncHandler(taskController.searchTask))
 router.get('', asyncHandler(taskController.findAllTasks))
 router.get('/:taskId', asyncHandler(taskController.findTask))
-
-router.use(authentication)
 
 //create Task
 router.post('/create', asyncHandler(taskController.createTask))

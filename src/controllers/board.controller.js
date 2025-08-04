@@ -12,10 +12,10 @@ class BoardController {
     }
     
     getBoard = async(req, res, next) => {
-        const boardId = req.param.boardId;
+        const { boardId } = req.params;
         
         new SuccessResponse({
-            metadata: await BoardService.createBoard(req.body)
+            metadata: await BoardService.getBoard(boardId)
         }).send(res)
     }
     
