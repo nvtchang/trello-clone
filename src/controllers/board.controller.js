@@ -13,7 +13,6 @@ class BoardController {
     
     getBoard = async(req, res, next) => {
         const { boardId } = req.params;
-        
         new SuccessResponse({
             metadata: await BoardService.getBoard(boardId)
         }).send(res)
@@ -26,6 +25,13 @@ class BoardController {
         }).send(res)
     }
     
+    updateBoard = async(req, res, next) => {
+        const { boardId } = req.params;
+        const { body } = req;
+        new SuccessResponse({
+            metadata: await BoardService.getBoard({boardId, body})
+        }).send(res)
+    }
 }
 
 module.exports = new BoardController()

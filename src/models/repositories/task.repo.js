@@ -16,7 +16,7 @@ const findOneUpdatedTask = async ({filter, update}) => {
     const result = await task.findOneAndUpdate(filter, update, {new : true})
     if(!result) return null 
     const keys = Object.keys(update); //['title', 'isArchived']
-    const updatedFields  = keys.reduce((acc, curr) => { //return only updated fields
+    const updatedFields = keys.reduce((acc, curr) => { //return only updated fields
         acc[curr] = result[curr] 
         return acc
     }, {})

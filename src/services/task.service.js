@@ -48,6 +48,10 @@ class TaskFactory {
     static async findTask({taskId}) {
         return await findTask({taskId, unSelect: ['__v']})
     }
+
+    static async moveTask() {
+        
+    }
 }
 
 //define base task class

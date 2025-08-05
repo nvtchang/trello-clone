@@ -15,6 +15,9 @@ router.post('/create', asyncHandler(boardController.createBoard))
 //delete Board
 router.delete('/delete', checkRole(role.ADMIN), asyncHandler(boardController.createBoard))
 
+//update board 
+router.patch('/:boardId', checkRole(role.ADMIN), asyncHandler(boardController.updateBoard))
+
 //query
 router.get('/:boardId', isBoardMember, asyncHandler(boardController.getBoard))
 
